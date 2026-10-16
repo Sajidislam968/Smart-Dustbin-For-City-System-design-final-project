@@ -1,6 +1,8 @@
 #include <WiFi.h>
 #include <PubSubClient.h>
 #include <ESP_Mail_Client.h>
+#include "credentials.h"
+
 #define MQ2pin 34
 int sensorValue = 0;
 #define TRIG_PIN_1 5
@@ -8,16 +10,6 @@ int sensorValue = 0;
 #define TRIG_PIN_2 14
 #define ECHO_PIN_2 27
 
-const char* ssid = "RAFI";
-const char* password = "12341234";
-const char* mqtt_server = "broker.emqx.io"; //From comment prompt (ping test.mosquitto.org)
-
-#define SMTP_server "smtp.gmail.com"
-#define SMTP_Port 465
-#define sender_email "sajidislam968@gmail.com"
-#define sender_password "utcr uzzb wpqi zsaa"
-#define Recipient_email "sajid0002@std.bdu.ac.bd"
-#define Recipient_name "Dustbin Authority"
 SMTPSession smtp;
 
 WiFiClient espClient;
@@ -33,10 +25,10 @@ void setup_wifi() {
   // We start by connecting to a WiFi network
   Serial.println();
   Serial.print("Connecting to ");
-  Serial.println(ssid);
+  Serial.println(WIFI_SSID);
 
   WiFi.mode(WIFI_STA);
-  WiFi.begin(ssid, password);
+  WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
 
   while (WiFi.status() != WL_CONNECTED) {
     delay(500);
@@ -105,7 +97,7 @@ void setup() {
   
   Serial.println("MQ2 warming up!");
   setup_wifi();
-  client.setServer(mqtt_server, 1883);
+  client.setServer(MQTT_SERVER, 1883);
   client.setCallback(callback);
   smtp.debug(1);
 
@@ -163,18 +155,18 @@ void loop() {
 
         smtp.debug(1);
         ESP_Mail_Session session;
-        session.server.host_name = SMTP_server ;
-        session.server.port = SMTP_Port;
-        session.login.email = sender_email;
-        session.login.password = sender_password;
+        session.server.host_name = SMTP_SERVER ;
+        session.server.port = SMTP_PORT;
+        session.login.email = SENDER_EMAIL;
+        session.login.password = SENDER_PASSWORD;
         session.login.user_domain = "";
         /* Declare the message class */
 
         SMTP_Message message;
         message.sender.name = "ESP 32";
-        message.sender.email = sender_email;
+        message.sender.email = SENDER_EMAIL;
         message.subject = "Dustbin Level";
-        message.addRecipient(Recipient_name,Recipient_email);
+        message.addRecipient(RECIPIENT_NAME,RECIPIENT_EMAIL);
         //Send HTML message
         String htmlMsg = "<div style=\"color:#000000;\"><h1> Dustbin-1 Filled!</h1><p>Dustbin-1 Is Full.</p></div>";
         message.html.content = htmlMsg.c_str();

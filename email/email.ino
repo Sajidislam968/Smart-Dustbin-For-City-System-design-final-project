@@ -1,22 +1,6 @@
 #include <WiFi.h>
-
 #include <ESP_Mail_Client.h>
-
-#define WIFI_SSID "RAFI"
-
-#define WIFI_PASSWORD "12341234"
-
-#define SMTP_server "smtp.gmail.com"
-
-#define SMTP_Port 465
-
-#define sender_email "sajidislam968@gmail.com"
-
-#define sender_password "utcr uzzb wpqi zsaa"
-
-#define Recipient_email "sajid0002@std.bdu.ac.bd"
-
-#define Recipient_name "Sajid"
+#include "credentials.h"
 
 SMTPSession smtp;
 
@@ -52,13 +36,13 @@ void setup(){
 
   ESP_Mail_Session session;
 
-  session.server.host_name = SMTP_server ;
+  session.server.host_name = SMTP_SERVER ;
 
-  session.server.port = SMTP_Port;
+  session.server.port = SMTP_PORT;
 
-  session.login.email = sender_email;
+  session.login.email = SENDER_EMAIL;
 
-  session.login.password = sender_password;
+  session.login.password = SENDER_PASSWORD;
 
   session.login.user_domain = "";
 
@@ -68,11 +52,11 @@ void setup(){
 
   message.sender.name = "ESP 32";
 
-  message.sender.email = sender_email;
+  message.sender.email = SENDER_EMAIL;
 
   message.subject = "ESP32 Testing Email";
 
-  message.addRecipient(Recipient_name,Recipient_email);
+  message.addRecipient(RECIPIENT_NAME,RECIPIENT_EMAIL);
 
    //Send HTML message
 
